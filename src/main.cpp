@@ -6,6 +6,6 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    std::cout << "Hello world!";
+    std::cout << __cplusplus << std::endl;
     return 0;
 }
