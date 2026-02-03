@@ -30,7 +30,7 @@ const std::vector<std::string> WaitingQueue::get_all_sorted() const {
         result.push_back(temp.front());
         temp.pop();
     }
-    std::sort(result.begin(), result.end());
+    std::sort(result.begin(), result.end()); // как-будто можно вообще не сортировать и эта функция особо не нужна
     return result;
 }
 

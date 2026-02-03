@@ -5,7 +5,7 @@
 
 #include "parser.hpp"
 #include "../../utils/time/time.hpp"
-#include "EventFactory.h"
+#include "../../events/factory/event_factory.hpp"
 
 Club Parser::parse_file(const std::string& filename, std::vector<std::unique_ptr<Event>>& events) {
     std::ifstream file(filename);
@@ -80,5 +80,5 @@ Club Parser::parse_file(const std::string& filename, std::vector<std::unique_ptr
         }
     }
     
-    return Club(table_count, open_time, close_time, hourly_rate);
+    return Club(places_count, open_time, close_time, price_per_hour);
 }

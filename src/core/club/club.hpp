@@ -5,10 +5,10 @@
 #include <string>
 #include <memory>
 
-#include "client.hpp"
-#include "place.hpp"
-#include "waiting_queue.hpp"
-#include "../events/Event.hpp"
+#include "../client/client.hpp"
+#include "../place/place.hpp"
+#include "../waiting_queue/waiting_queue.hpp"
+#include "../../events/event.hpp"
 #include "../../utils/time/time.hpp"
 
 class Club {
@@ -17,7 +17,7 @@ private:
     Time open_time;
     Time close_time;
     unsigned int price_per_hour;
-    bool is_open = false;
+    bool opened = false;
 
     std::unordered_map<std::string, Client> clients;
     std::vector<Place> places;
@@ -33,6 +33,7 @@ public:
     void finalize_day();
 
     const bool is_open(const Time& time) const;
+    const bool is_client_inside(const std::string& name) const;
     const bool is_client_seated(const std::string& name) const;
     const bool is_place_free(const unsigned int place_num) const;
     const unsigned int get_free_place() const;

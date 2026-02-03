@@ -4,7 +4,7 @@
 #include <regex>
 
 #include "event_factory.hpp"
-#include "events/IncomingEvents.h"
+#include "../incoming/incoming_events.hpp"
 
 
 bool EventFactory::validate_client_name(const std::string& name) {
@@ -49,32 +49,32 @@ std::unique_ptr<Event> EventFactory::parse_line(const std::string& line, int lin
     
     switch (event_type) {
         case EventType::ClientArrived: {
-            if (tokens.size() != 3) throw std::invalid_argument("Invalid event format");
-            if (!validate_client_name(tokens[2])) throw std::invalid_argument("Invalid client name");
+            if (tokens.size() != 3) throw std::invalid_argument(line);
+            if (!validate_client_name(tokens[2])) throw std::invalid_argument(line);
             return std::make_unique<ClientArrivedEvent>(time, tokens[2]);
         }
         case EventType::ClientSatDown: {
-            if (tokens.size() != 4) throw std::invalid_argument("Invalid event format");
-            if (!validate_client_name(tokens[2])) throw std::invalid_argument("Invalid client name");
+            if (tokens.size() != 4) throw std::invalid_argument(line);
+            if (!validate_client_name(tokens[2])) throw std::invalid_argument(line);
             try {
                 unsigned int place_num = std::stoi(tokens[3]);
+                if (place_num < 1) throw std::invalid_argument(line);
             } catch (...) {
-                throw std::invalid_argument("Invalid place number");
+                throw std::invalid_argument(line);
             }
-            if (place_num < 1) throw std::invalid_argument("Invalid place number");
             return std::make_unique<ClientSatDownEvent>(time, tokens[2], std::stoi(tokens[3]));
         }
         case EventType::ClientWaiting: {
-            if (tokens.size() != 3) throw std::invalid_argument("Invalid event format");
-            if (!validate_client_name(tokens[2])) throw std::invalid_argument("Invalid client name");
+            if (tokens.size() != 3) throw std::invalid_argument(line);
+            if (!validate_client_name(tokens[2])) throw std::invalid_argument(line);
             return std::make_unique<ClientWaitingEvent>(time, tokens[2]);
         }
         case EventType::ClientLeft: {
-            if (tokens.size() != 3) throw std::invalid_argument("Invalid event format");
-            if (!validate_client_name(tokens[2])) throw std::invalid_argument("Invalid client name");
+            if (tokens.size() != 3) throw std::invalid_argument(line);
+            if (!validate_client_name(tokens[2])) throw std::invalid_argument(line);
             return std::make_unique<ClientLeftEvent>(time, tokens[2]);
         }
         default:
-            throw std::invalid_argument("Unknown event type");
+            throw std::invalid_argument(line);
     }
 }

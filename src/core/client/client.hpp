@@ -5,25 +5,19 @@
 
 #include "../../utils/time/time.hpp"
 
-enum class ClientStatus {
-    Inside,
-    Seated
-};
 
 class Client {
 public:
     Client(const std::string& _name) 
-        : name(name), status(ClientStatus::Inside), place_num(std::nullopt) {}
+        : name(name), place_num(std::nullopt) {}
 
     const std::string get_name() const;
-    const ClientStatus get_status() const;
     const std::optional<unsigned int> get_place_num() const;
     const Time get_seated_time() const;
 
     void set_place(const unsigned int _place_num, const Time& _seatead_time);
 private:
     std::string name;
-    ClientStatus status;
     std::optional<unsigned int> place_num;
     Time seated_time;
 };

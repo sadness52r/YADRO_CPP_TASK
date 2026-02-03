@@ -1,10 +1,10 @@
+#include <iostream>
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
 
 #include "club.hpp"
 #include "../../events/incoming/incoming_events.hpp"
-#include "events/OutgoingEvents.h"
 
 
 Club::Club(const unsigned int _places_count, const Time _open_time, const Time _close_time, 
@@ -15,92 +15,87 @@ Club::Club(const unsigned int _places_count, const Time _open_time, const Time _
     for (int i = 1; i <= places_count; ++i) {
         places.emplace_back(i);
     }
-    is_open = false;
+    opened = false;
 }
 
-bool Club::is_open(const Time& time) const {
+const bool Club::is_open(const Time& time) const {
     return time >= open_time && time <= close_time;
 }
 
-bool Club::is_client_seated(const std::string& name) const {
+const bool Club::is_client_inside(const std::string& name) const {
+    return clients.find(name) != clients.end();
+}
+
+const bool Club::is_client_seated(const std::string& name) const {
     auto it = clients.find(name);
-    return it != clients.end() && it->second.get_status() == ClientStatus::Seated;
+    return it != clients.end() && it->second.get_place_num().has_value();
 }
 
-bool ComputerClub::is_table_free(int table_num) const {
-    if (table_num < 1 || table_num > table_count_) return false;
-    return !tables_[table_num - 1].is_occupied;
+const bool Club::is_place_free(const unsigned int place_num) const {
+    if (place_num < 1 || place_num > places_count) return false;
+    return !places[place_num - 1].is_occupied();
 }
 
-bool ComputerClub::can_wait() const {
-    return waiting_queue_.can_add();
-}
-
-int ComputerClub::get_free_table() const {
-    for (int i = 0; i < table_count_; ++i) {
-        if (!tables_[i].is_occupied) {
-            return tables_[i].number;
+const unsigned int Club::get_free_place() const {
+    for (int i = 0; i < places_count; ++i) {
+        if (!places[i].is_occupied()) {
+            return places[i].get_num();
         }
     }
     return -1;
 }
 
-void ComputerClub::process_event(std::unique_ptr<Event> event) {
+void Club::process_event(std::unique_ptr<Event> event) {
     Time event_time = event->get_time();
-    is_open_ = is_open(event_time); // обновляем статус открытия
+    opened = is_open(event_time);
 
     try {
-        event->execute(*this);
+        //event->execute(*this);
         add_to_event_log(std::move(event));
     } catch (const std::runtime_error& e) {
-        // Генерация события ошибки 13
-        auto error_event = Event::create_error_event(event_time, e.what());
+        //auto error_event = Event::create_error_event(event_time, e.what());
         add_to_event_log(std::move(event)); // оригинальное событие всё равно логируем
-        add_to_event_log(std::move(error_event));
+        //add_to_event_log(std::move(error_event));
     }
 }
 
-void ComputerClub::process_all_events(std::vector<std::unique_ptr<Event>>&& events) {
-    event_log_.clear();
-    clients_.clear();
+// void Club::process_all_events(std::vector<std::unique_ptr<Event>>&& events) {
+//     event_log_.clear();
+//     clients_.clear();
 
-    // Добавляем время открытия как первое событие в вывод
-    // (но не как обрабатываемое событие)
-    for (auto& event : events) {
-        process_event(std::move(event));
-    }
+//     // Добавляем время открытия как первое событие в вывод
+//     // (но не как обрабатываемое событие)
+//     for (auto& event : events) {
+//         process_event(std::move(event));
+//     }
 
-    // Финализация дня
-    finalize_day();
-}
+//     // Финализация дня
+//     finalize_day();
+// }
 
-void ComputerClub::finalize_day() {
-    // Собираем всех клиентов, которые остались в клубе
+void Club::finalize_day() {
     std::vector<std::string> remaining_clients;
     
-    // Клиенты за столами
-    for (const auto& table : tables_) {
-        if (table.is_occupied && table.client_name) {
-            remaining_clients.push_back(*table.client_name);
+    for (const auto& place : places) {
+        if (place.is_occupied()) {
+            remaining_clients.push_back(*place.get_сlient());
         }
     }
     
-    // Клиенты в очереди
-    auto waiting = waiting_queue_.get_all_sorted();
+    auto waiting = waiting_queue.get_all_sorted();
     remaining_clients.insert(remaining_clients.end(), waiting.begin(), waiting.end());
     
-    // Сортируем по алфавиту
     std::sort(remaining_clients.begin(), remaining_clients.end());
     
-    // Генерируем события 11 для каждого клиента
     for (const auto& client_name : remaining_clients) {
-        auto event = Event::create_client_forced_left_event(close_time_, client_name);
-        event->execute(*this);
-        add_to_event_log(std::move(event));
+        //auto event = Event::create_client_forced_left_event(close_time_, client_name);
+        //event->execute(*this);
+        //add_to_event_log(std::move(event));
+        std::cout << "Сгенерировано событие 11, клуб закрывается\n";
     }
 }
 
-void ComputerClub::handle_client_arrived(const std::string& name, const Time& time) {
+void Club::handle_client_arrived(const std::string& name, const Time& time) {
     if (!is_open(time)) {
         throw std::runtime_error("NotOpenYet");
     }
@@ -108,58 +103,55 @@ void ComputerClub::handle_client_arrived(const std::string& name, const Time& ti
         throw std::runtime_error("YouShallNotPass");
     }
     
-    clients_[name] = Client(name);
-    clients_[name].status = ClientStatus::Inside;
-    clients_[name].arrival_time = time;
+    clients[name] = Client(name);
 }
 
-void ComputerClub::handle_client_sat_down(const std::string& name, int table_num, const Time& time) {
+void Club::handle_client_sat_down(const std::string& name, 
+        const unsigned int place_num, const Time& time) {
     if (!is_client_inside(name)) {
         throw std::runtime_error("ClientUnknown");
     }
-    if (table_num < 1 || table_num > table_count_) {
+    if (place_num < 1 || place_num > places_count) {
         throw std::runtime_error("PlaceIsBusy"); // несуществующий стол = занят
     }
+
+    if (!is_place_free(place_num)) {
+        throw std::runtime_error("PlaceIsBusy");
+    }
+
     // Разрешаем пересадку: если клиент уже сидит за другим столом - освободим его
     if (is_client_seated(name)) {
-        int current_table = *clients_[name].table_number;
-        tables_[current_table - 1].release(time, hourly_rate_);
-    }
-    
-    if (!is_table_free(table_num)) {
-        throw std::runtime_error("PlaceIsBusy");
+        int current_place = *clients[name].get_place_num();
+        places[current_place - 1].release(time, price_per_hour);
     }
     
     // Садим клиента
-    tables_[table_num - 1].occupy(name, time);
-    clients_[name].status = ClientStatus::Seated;
-    clients_[name].table_number = table_num;
-    clients_[name].seated_time = time;
+    places[place_num - 1].occupy(name, time);
+    clients[name].set_place(place_num, time);
 }
 
-void ComputerClub::handle_client_waiting(const std::string& name, const Time& time) {
+void Club::handle_client_waiting(const std::string& name, const Time& time) {
     if (!is_client_inside(name)) {
         throw std::runtime_error("ClientUnknown");
     }
     // Проверяем наличие свободных столов
-    if (get_free_table() != -1) {
+    if (get_free_place() != -1) {
         throw std::runtime_error("ICanWaitNoLonger!");
     }
     // Проверяем переполнение очереди
-    if (!can_wait()) {
+    if (waiting_queue.is_full()) {
         // Клиент уходит немедленно - генерируем событие 11
-        auto forced_left = Event::create_client_forced_left_event(time, name);
-        forced_left->execute(*this);
-        add_to_event_log(std::move(forced_left));
+        //auto forced_left = Event::create_client_forced_left_event(time, name);
+        //forced_left->execute(*this);
+        //add_to_event_log(std::move(forced_left));
+        std::cout << "Сгенерировано событие 11, очередь забита\n";
         return;
     }
     // Добавляем в очередь
-    waiting_queue_.add(name);
-    clients_[name].status = ClientStatus::Inside; // остаётся внутри, но без стола
-    clients_[name].table_number = std::nullopt;
+    waiting_queue.add(name);
 }
 
-void ComputerClub::handle_client_left(const std::string& name, const Time& time) {
+void Club::handle_client_left(const std::string& name, const Time& time) {
     if (!is_client_inside(name)) {
         throw std::runtime_error("ClientUnknown");
     }

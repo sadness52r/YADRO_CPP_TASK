@@ -22,14 +22,14 @@ inline int to_int(EventType type) {
     return static_cast<int>(type);
 }
 
-const std::unordered_map<unsigned int, EventType> EVENT_ID_TO_TYPE = {
+std::unordered_map<unsigned int, EventType> EVENT_ID_TO_TYPE = {
     {1, EventType::ClientArrived},
     {2, EventType::ClientSatDown},
     {3, EventType::ClientWaiting},
     {4, EventType::ClientLeft},
     {11, EventType::ClientForcedLeft},
     {12, EventType::ClientSeatedFromQueue},
-    {13, EventType::Error},
+    {13, EventType::Error}
 };
 
 
@@ -52,5 +52,6 @@ public:
     static std::unique_ptr<Event> create_error_event(const Time time, const std::string& error_msg);
     static std::unique_ptr<Event> create_client_seated_event(const Time time, 
         const std::string& client, const int place);
+    //static std::unique_ptr<Event> create_client_forced_left_event(Time time, const std::string& client);
     static std::unique_ptr<Event> create_client_left_event(const Time time, const std::string& client);
 };
