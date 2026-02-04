@@ -45,6 +45,10 @@ const unsigned int Club::get_free_place() const {
     return -1;
 }
 
+const std::vector<Place> Club::get_places() const {
+    return places;
+}
+
 void Club::process_event(std::unique_ptr<Event> event) {
     Time event_time = event->get_time();
 
@@ -153,7 +157,6 @@ void Club::handle_client_left(const std::string& name, const Time& time) {
     if (is_client_seated(name)) {
         place_num = *clients[name].get_place_num();
         places[place_num.value() - 1].release(time, price_per_hour);
-        
     }
 
     clients.erase(name);
@@ -162,7 +165,9 @@ void Club::handle_client_left(const std::string& name, const Time& time) {
 }
 
 void Club::handle_client_forced_left(const std::string& name, const Time& time) {
-    places[clients[name].get_place_num().value() - 1].release(time, price_per_hour);
+    if (clients[name].get_place_num().has_value()) {
+        places[*clients[name].get_place_num() - 1].release(time, price_per_hour);
+    }
     clients.erase(name);
 }
 
