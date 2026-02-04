@@ -56,13 +56,15 @@ std::unique_ptr<Event> EventFactory::parse_line(const std::string& line, int lin
         case EventType::ClientSatDown: {
             if (tokens.size() != 4) throw std::invalid_argument(line);
             if (!validate_client_name(tokens[2])) throw std::invalid_argument(line);
+            int place_num;
             try {
-                unsigned int place_num = std::stoi(tokens[3]);
+                place_num = std::stoi(tokens[3]);
                 if (place_num < 1) throw std::invalid_argument(line);
             } catch (...) {
                 throw std::invalid_argument(line);
             }
-            return std::make_unique<ClientSatDownEvent>(time, tokens[2], std::stoi(tokens[3]));
+            return std::make_unique<ClientSatDownEvent>(time, tokens[2], 
+                static_cast<unsigned int>(place_num));
         }
         case EventType::ClientWaiting: {
             if (tokens.size() != 3) throw std::invalid_argument(line);

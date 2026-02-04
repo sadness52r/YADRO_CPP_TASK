@@ -23,14 +23,13 @@ std::optional<std::string> WaitingQueue::pop() {
     return front;
 }
 
-const std::vector<std::string> WaitingQueue::get_all_sorted() const {
+const std::vector<std::string> WaitingQueue::get_all() const {
     std::vector<std::string> result;
     auto temp = queue;
     while (!temp.empty()) {
         result.push_back(temp.front());
         temp.pop();
     }
-    std::sort(result.begin(), result.end()); // как-будто можно вообще не сортировать и эта функция особо не нужна
     return result;
 }
 
