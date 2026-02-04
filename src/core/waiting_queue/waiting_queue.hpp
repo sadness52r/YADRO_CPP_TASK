@@ -19,7 +19,7 @@ public:
     void add(const std::string& client_name);
     std::optional<std::string> pop();
 
-    const std::vector<std::string> get_all_sorted() const;
+    const std::vector<std::string> get_all() const;
 
     const size_t size() const;
 };

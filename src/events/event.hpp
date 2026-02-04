@@ -51,7 +51,7 @@ public:
 
     static std::unique_ptr<Event> create_error_event(const Time time, const std::string& error_msg);
     static std::unique_ptr<Event> create_client_seated_event(const Time time, 
-        const std::string& client, const int place);
-    //static std::unique_ptr<Event> create_client_forced_left_event(Time time, const std::string& client);
+        const std::string& client, const unsigned int place);
+    static std::unique_ptr<Event> create_client_forced_left_event(Time time, const std::string& client);
     static std::unique_ptr<Event> create_client_left_event(const Time time, const std::string& client);
 };
