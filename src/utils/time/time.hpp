@@ -19,6 +19,7 @@ public:
     bool operator>(const Time& other) const;
     bool operator>=(const Time& other) const;
     bool operator==(const Time& other) const;
+    bool operator!=(const Time& other) const;
 
     Time operator+(const int _minutes) const;
     Time operator-(const int _minutes) const;

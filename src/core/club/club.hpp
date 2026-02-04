@@ -37,6 +37,7 @@ public:
     const bool is_client_seated(const std::string& name) const;
     const bool is_place_free(const unsigned int place_num) const;
     const unsigned int get_free_place() const;
+    const std::vector<Place> get_places() const;
 
     void seat_client_from_queue(const Time& time, std::optional<unsigned int> place_num);
 

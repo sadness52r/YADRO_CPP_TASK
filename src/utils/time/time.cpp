@@ -52,6 +52,10 @@ bool Time::operator==(const Time& other) const {
     return minutes == other.minutes;
 }
 
+bool Time::operator!=(const Time& other) const {
+    return minutes != other.minutes;
+}
+
 Time Time::operator+(const int _minutes) const {
     return Time(minutes + _minutes);
 }
