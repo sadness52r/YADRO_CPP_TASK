@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <sstream>
 #include <stdexcept>
@@ -158,78 +159,78 @@ void Club::handle_client_left(const std::string& name, const Time& time) {
     
     // Если клиент сидел за столом - освобождаем стол
     if (is_client_seated(name)) {
-        int table_num = *clients_[name].table_number;
-        tables_[table_num - 1].release(time, hourly_rate_);
+        int place_num = *clients[name].get_place_num();
+        places[place_num - 1].release(time, price_per_hour);
     }
     
     // Удаляем клиента
-    clients_.erase(name);
+    clients.erase(name);
     
     // Пытаемся посадить следующего из очереди
-    seat_client_from_queue(time);
+    //seat_client_from_queue(time);
 }
 
-void ComputerClub::handle_client_forced_left(const std::string& name, const Time& time) {
-    // Удаляем из очереди (если там был)
-    // Просто удаляем клиента - он покидает клуб
-    clients_.erase(name);
-}
+// void Club::handle_client_forced_left(const std::string& name, const Time& time) {
+//     // Удаляем из очереди (если там был)
+//     // Просто удаляем клиента - он покидает клуб
+//     clients.erase(name);
+// }
 
-void ComputerClub::handle_client_seated_from_queue(const std::string& name, int table_num, const Time& time) {
-    // Этот метод вызывается только из внутренней логики при освобождении стола
-    if (!is_client_inside(name)) {
-        return; // клиент уже ушёл
-    }
+// void Club::handle_client_seated_from_queue(const std::string& name, int table_num, const Time& time) {
+//     // Этот метод вызывается только из внутренней логики при освобождении стола
+//     if (!is_client_inside(name)) {
+//         return; // клиент уже ушёл
+//     }
     
-    // Садим клиента
-    tables_[table_num - 1].occupy(name, time);
-    clients_[name].status = ClientStatus::Seated;
-    clients_[name].table_number = table_num;
-    clients_[name].seated_time = time;
+//     // Садим клиента
+//     tables_[table_num - 1].occupy(name, time);
+//     clients_[name].status = ClientStatus::Seated;
+//     clients_[name].table_number = table_num;
+//     clients_[name].seated_time = time;
+// }
+
+// void Club::seat_client_from_queue(const Time& time) {
+//     if (waiting_queue_.is_empty()) return;
+    
+//     // Ищем свободный стол
+//     int free_table = get_free_table();
+//     if (free_table == -1) return;
+    
+//     // Берём первого из очереди
+//     auto next_client = waiting_queue_.pop();
+//     if (!next_client) return;
+    
+//     // Генерируем исходящее событие 12
+//     auto seated_event = Event::create_client_seated_event(time, *next_client, free_table);
+//     seated_event->execute(*this);
+//     add_to_event_log(std::move(seated_event));
+// }
+
+void Club::add_to_event_log(std::unique_ptr<Event> event) {
+    event_log.push_back(std::move(event));
 }
 
-void ComputerClub::seat_client_from_queue(const Time& time) {
-    if (waiting_queue_.is_empty()) return;
-    
-    // Ищем свободный стол
-    int free_table = get_free_table();
-    if (free_table == -1) return;
-    
-    // Берём первого из очереди
-    auto next_client = waiting_queue_.pop();
-    if (!next_client) return;
-    
-    // Генерируем исходящее событие 12
-    auto seated_event = Event::create_client_seated_event(time, *next_client, free_table);
-    seated_event->execute(*this);
-    add_to_event_log(std::move(seated_event));
-}
-
-void ComputerClub::add_to_event_log(std::unique_ptr<Event> event) {
-    event_log_.push_back(std::move(event));
-}
-
-std::vector<std::string> ComputerClub::generate_output() const {
+std::vector<std::string> Club::generate_output() const {
     std::vector<std::string> output;
     
     // Первая строка - время открытия
-    output.push_back(open_time_.to_string());
+    output.push_back(open_time.to_string());
     
     // Все события в хронологическом порядке
-    for (const auto& event : event_log_) {
+    for (const auto& event : event_log) {
         output.push_back(event->to_string());
     }
     
     // Время закрытия
-    output.push_back(close_time_.to_string());
+    output.push_back(close_time.to_string());
     
     // Статистика по столам
-    for (const auto& table : tables_) {
+    for (const auto& place : places) {
         std::ostringstream oss;
-        oss << table.number << " " << table.revenue << " ";
+        oss << place.get_num() << " " << place.get_income() << " ";
         // Формат времени: HH:MM
-        int hours = table.total_minutes / 60;
-        int mins = table.total_minutes % 60;
+        int hours = place.get_total_minutes() / 60;
+        int mins = place.get_total_minutes() % 60;
         oss << std::setw(2) << std::setfill('0') << hours << ":"
             << std::setw(2) << std::setfill('0') << mins;
         output.push_back(oss.str());

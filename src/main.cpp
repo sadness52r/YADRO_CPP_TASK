@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
         Club club = Parser::parse_file(argv[1], events);
         
         return 0;
-    } catch (const std::runtime_error& e) {
+    } catch (const std::invalid_argument& e) {
         // Ошибка формата: выводим первую некорректную строку
         std::cout << e.what() << std::endl;
         return 1;

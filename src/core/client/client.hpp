@@ -8,8 +8,9 @@
 
 class Client {
 public:
+    Client() = default;
     Client(const std::string& _name) 
-        : name(name), place_num(std::nullopt) {}
+        : name(_name), place_num(std::nullopt) {}
 
     const std::string get_name() const;
     const std::optional<unsigned int> get_place_num() const;

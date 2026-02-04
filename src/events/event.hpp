@@ -22,7 +22,7 @@ inline int to_int(EventType type) {
     return static_cast<int>(type);
 }
 
-std::unordered_map<unsigned int, EventType> EVENT_ID_TO_TYPE = {
+inline std::unordered_map<unsigned int, EventType> EVENT_ID_TO_TYPE = {
     {1, EventType::ClientArrived},
     {2, EventType::ClientSatDown},
     {3, EventType::ClientWaiting},
