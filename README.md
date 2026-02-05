@@ -34,4 +34,7 @@ task.exe tests\test.txt
 ```
 
 ### Запуск unit-тестов (GoogleTest)
+
+```bash
 ./tests/unit_tests
+```
