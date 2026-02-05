@@ -11,20 +11,6 @@ cmake .. -DBUILD_TESTS=ON
 make
 ```
 
-### Сборка напрямую через компилятор
-
-#### Linux
-
-```bash
-g++ -std=c++17 -O2 src/**/*.cpp -Isrc -o task
-```
-
-#### Windows
-
-```bash
-g++ -std=gnu++17 src\**\*.cpp -Isrc -o task.exe
-```
-
 ## Запуск
 
 ### Запуск основного приложения
