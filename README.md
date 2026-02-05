@@ -8,9 +8,10 @@
 ### Сборка через CMake (Linux / Windows MinGW)
 
 ```bash
-mkdir build && cd build
-cmake .. -DBUILD_TESTS=ON
-make
+mkdir build
+cd build
+cmake -S .. -G "MinGW Makefiles" -DBUILD_TESTS=ON 
+cmake --build .
 ```
 
 ## Запуск
@@ -18,7 +19,7 @@ make
 ### Запуск основного приложения
 
 ```bash
-task.exe ..\tests\test.txt
+.\task.exe ..\tests\test.txt
 ```
 
 ### Запуск unit-тестов (GoogleTest)
