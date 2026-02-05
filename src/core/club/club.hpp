@@ -5,14 +5,21 @@
 #include <string>
 #include <memory>
 
-#include "../client/client.hpp"
-#include "../place/place.hpp"
-#include "../waiting_queue/waiting_queue.hpp"
-#include "../../events/event.hpp"
-#include "../../utils/time/time.hpp"
+#include "core/client/client.hpp"
+#include "core/place/place.hpp"
+#include "core/waiting_queue/waiting_queue.hpp"
+#include "events/event.hpp"
+#include "utils/time/time.hpp"
+
 
 class Club {
 private:
+    static constexpr auto YouShallNotPass = "YouShallNotPass";
+    static constexpr auto NotOpenYet = "NotOpenYet";
+    static constexpr auto PlaceIsBusy = "PlaceIsBusy";
+    static constexpr auto ClientUnknown = "ClientUnknown";
+    static constexpr auto ICanWaitNoLonger = "ICanWaitNoLonger";
+
     unsigned int places_count;
     Time open_time;
     Time close_time;
@@ -42,12 +49,12 @@ public:
     void seat_client_from_queue(const Time& time, std::optional<unsigned int> place_num);
 
     void handle_client_arrived(const std::string& name, const Time& time);
-    void handle_client_sat_down(const std::string& name, const unsigned int place_num, 
-        const Time& time);
+    void handle_client_sat_down(const std::string& name, const unsigned int place_num, const Time& time);
     void handle_client_waiting(const std::string& name, const Time& time);
     void handle_client_left(const std::string& name, const Time& time);
     void handle_client_forced_left(const std::string& name, const Time& time);
-    void handle_client_seated_from_queue(const std::string& name, const unsigned int place_num, const Time& time);
+    void handle_client_seated_from_queue(const std::string& name, const unsigned int place_num, 
+        const Time& time);
 
     std::vector<std::string> generate_output() const;
 };

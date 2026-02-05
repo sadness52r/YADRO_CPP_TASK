@@ -1,7 +1,8 @@
-#include "time.hpp"
 #include <sstream>
 #include <iomanip>
 #include <regex>
+
+#include "time.hpp"
 
 Time::Time(const std::string& time_str) {
     if (!std::regex_match(time_str, std::regex("^\\d{2}:\\d{2}$"))) {

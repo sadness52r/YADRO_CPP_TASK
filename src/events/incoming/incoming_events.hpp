@@ -3,7 +3,7 @@
 #include <string>
 #include <optional>
 
-#include "../event.hpp"
+#include "events/event.hpp"
 
 class ClientArrivedEvent : public Event {
 private:
@@ -15,8 +15,8 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientArrived; }
-    const std::string& get_client_name() const { return client_name; }
+    EventType id() const override;
+    const std::string& get_client_name() const;
 };
 
 class ClientSatDownEvent : public Event {
@@ -30,9 +30,9 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientSatDown; }
-    const std::string& get_client_name() const { return client_name; }
-    int get_place_number() const { return place_number; }
+    EventType id() const override;
+    const std::string& get_client_name() const;
+    int get_place_number() const;
 };
 
 class ClientWaitingEvent : public Event {
@@ -45,8 +45,8 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientWaiting; }
-    const std::string& get_client_name() const { return client_name; }
+    EventType id() const override;
+    const std::string& get_client_name() const;
 };
 
 class ClientLeftEvent : public Event {
@@ -59,6 +59,6 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientLeft; }
-    const std::string& get_client_name() const { return client_name; }
+    EventType id() const override;
+    const std::string& get_client_name() const;
 };

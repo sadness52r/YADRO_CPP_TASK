@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "../../src/events/incoming/incoming_events.hpp"
-#include "../../src/events/outgoing/outgoing_events.hpp"
-#include "../../src/utils/time/time.hpp"
+#include "events/incoming/incoming_events.hpp"
+#include "events/outgoing/outgoing_events.hpp"
+#include "utils/time/time.hpp"
 
 class EventTest : public ::testing::Test {
 protected:

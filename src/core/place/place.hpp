@@ -3,7 +3,7 @@
 #include <optional>
 #include <string>
 
-#include "../../utils/time/time.hpp"
+#include "utils/time/time.hpp"
 
 
 struct Place {

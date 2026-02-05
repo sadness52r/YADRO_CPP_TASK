@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 #include "club.hpp"
-#include "../../events/incoming/incoming_events.hpp"
+#include "events/incoming/incoming_events.hpp"
 
 
 Club::Club(const unsigned int _places_count, const Time _open_time, const Time _close_time, 
@@ -32,7 +32,9 @@ const bool Club::is_client_seated(const std::string& name) const {
 }
 
 const bool Club::is_place_free(const unsigned int place_num) const {
-    if (place_num < 1 || place_num > places_count) return false;
+    if (place_num < 1 || place_num > places_count) {
+        return false;
+    }
     return !places[place_num - 1].is_occupied();
 }
 
@@ -97,10 +99,10 @@ void Club::finalize_day() {
 
 void Club::handle_client_arrived(const std::string& name, const Time& time) {
     if (!is_open(time)) {
-        throw std::runtime_error("NotOpenYet");
+        throw std::runtime_error(NotOpenYet);
     }
     if (is_client_inside(name)) {
-        throw std::runtime_error("YouShallNotPass");
+        throw std::runtime_error(YouShallNotPass);
     }
     
     clients[name] = Client(name);
@@ -109,15 +111,11 @@ void Club::handle_client_arrived(const std::string& name, const Time& time) {
 void Club::handle_client_sat_down(const std::string& name, 
         const unsigned int place_num, const Time& time) {
     if (!is_client_inside(name)) {
-        throw std::runtime_error("ClientUnknown");
-    }
-
-    if (place_num < 1 || place_num > places_count) {
-        throw std::runtime_error("PlaceIsBusy");
+        throw std::runtime_error(ClientUnknown);
     }
 
     if (!is_place_free(place_num)) {
-        throw std::runtime_error("PlaceIsBusy");
+        throw std::runtime_error(PlaceIsBusy);
     }
 
     if (is_client_seated(name)) {
@@ -131,11 +129,11 @@ void Club::handle_client_sat_down(const std::string& name,
 
 void Club::handle_client_waiting(const std::string& name, const Time& time) {
     if (!is_client_inside(name)) {
-        throw std::runtime_error("ClientUnknown");
+        throw std::runtime_error(ClientUnknown);
     }
 
     if (get_free_place() != -1) {
-        throw std::runtime_error("ICanWaitNoLonger!");
+        throw std::runtime_error(ICanWaitNoLonger);
     }
 
     if (waiting_queue.is_full()) {
@@ -150,7 +148,7 @@ void Club::handle_client_waiting(const std::string& name, const Time& time) {
 
 void Club::handle_client_left(const std::string& name, const Time& time) {
     if (!is_client_inside(name)) {
-        throw std::runtime_error("ClientUnknown");
+        throw std::runtime_error(ClientUnknown);
     }
     
     std::optional<unsigned int> place_num = std::nullopt;
@@ -185,13 +183,18 @@ void Club::seat_client_from_queue(const Time& time,
     const std::optional<unsigned int> place_num) {
         
     if (waiting_queue.is_empty() || !place_num.has_value() ||
-        !is_place_free(place_num.value()))
+        !is_place_free(place_num.value())) {
             return;
+        }
     
     auto next_client = waiting_queue.pop();
-    if (!next_client) return;
+    if (!next_client) {
+        return;
+    }
     
-    auto seated_event = Event::create_client_seated_event(time, *next_client, place_num.value());
+    auto seated_event = 
+        Event::create_client_seated_event(time, *next_client, place_num.value());
+        
     seated_event->execute(*this);
     add_to_event_log(std::move(seated_event));
 }

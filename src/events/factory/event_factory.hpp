@@ -3,11 +3,19 @@
 #include <string>
 #include <memory>
 
-#include "../event.hpp"
+#include "events/event.hpp"
+#include "io/parser/parser.hpp"
 
+
+template<class... Ts> 
+struct Overload : Ts... { 
+    using Ts::operator()...; 
+};
+
+template<class... Ts> 
+Overload(Ts...) -> Overload<Ts...>;
 
 class EventFactory {
 public:
-    static std::unique_ptr<Event> parse_line(const std::string& line, int line_number);
-    static bool validate_client_name(const std::string& name);
+    static std::unique_ptr<Event> get_event(const EventTokens& tokens);
 };

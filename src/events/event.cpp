@@ -1,5 +1,5 @@
 #include "event.hpp"
-#include "outgoing/outgoing_events.hpp"
+#include "events/outgoing/outgoing_events.hpp"
 
 const Time Event::get_time() const { 
     return time; 

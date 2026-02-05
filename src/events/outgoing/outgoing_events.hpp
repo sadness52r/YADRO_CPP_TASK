@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "../event.hpp"
+#include "events/event.hpp"
 
 class ClientForcedLeftEvent : public Event {
 private:
@@ -14,7 +14,7 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientForcedLeft; } 
+    EventType id() const override;
 };
 
 class ClientSeatedFromQueueEvent : public Event {
@@ -28,7 +28,7 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::ClientSeatedFromQueue; }
+    EventType id() const override;
 };
 
 class ErrorEvent : public Event {
@@ -41,6 +41,6 @@ public:
 
     void execute(Club& club) override;
     std::string to_string() const override;
-    EventType id() const override { return EventType::Error; }
-    const std::string& get_error_msg() const { return error_msg; }
+    EventType id() const override;
+    const std::string& get_error_msg() const;
 };
