@@ -64,7 +64,7 @@ TEST_F(ClubTest, SeatAtOccupiedTable) {
     EXPECT_THROW(event->execute(club), std::runtime_error);
 }
 
-TEST_F(ClubTest, TableOccupancyAndRevenue) {
+TEST_F(ClubTest, PlaceOccupancyAndRevenue) {
     add_client("alice");
     seat_client("alice", 1);
     
