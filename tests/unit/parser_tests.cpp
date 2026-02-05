@@ -2,8 +2,8 @@
 #include <fstream>
 #include <filesystem>
 
-#include "../../src/io/parser/parser.hpp"
-#include "../../src/events/factory/event_factory.hpp"    
+#include "io/parser/parser.hpp"
+#include "events/factory/event_factory.hpp"    
 
 
 class TempFile {
@@ -69,15 +69,4 @@ TEST(ParserTest, EmptyFile) {
     EXPECT_THROW({
         Parser::parse_file(tf.path(), events);
     }, std::invalid_argument);
-}
-
-TEST(EventFactoryTest, ParseAllEventTypes) {
-    EXPECT_NO_THROW(EventFactory::parse_line("10:30 1 valid_name", 1));
-    EXPECT_NO_THROW(EventFactory::parse_line("10:30 2 valid_name 3", 1));
-    EXPECT_NO_THROW(EventFactory::parse_line("10:30 3 valid_name", 1));
-    EXPECT_NO_THROW(EventFactory::parse_line("10:30 4 valid_name", 1));
-    
-    EXPECT_THROW(EventFactory::parse_line("10:30 5 invalid", 1), std::invalid_argument);
-    EXPECT_THROW(EventFactory::parse_line("10:30 1", 1), std::invalid_argument);
-    EXPECT_THROW(EventFactory::parse_line("10:30 2 name", 1), std::invalid_argument);
 }

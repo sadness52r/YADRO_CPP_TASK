@@ -8,6 +8,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.hpp")
 
 add_executable(task ${SOURCES})
 
+target_include_directories(task PRIVATE
+    ${CMAKE_SOURCE_DIR}/src
+)
+
 option(BUILD_TESTS "Build unit tests" ON)
 if(BUILD_TESTS)
     enable_testing()

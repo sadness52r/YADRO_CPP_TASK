@@ -21,6 +21,11 @@ if(TEST_SOURCES)
         ${CMAKE_CURRENT_SOURCE_DIR}/../src
         ${gtest_SOURCE_DIR}/include
     )
+
+    target_include_directories(unit_tests PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${gtest_SOURCE_DIR}/include
+    )
     
     target_link_libraries(unit_tests gtest_main)
     

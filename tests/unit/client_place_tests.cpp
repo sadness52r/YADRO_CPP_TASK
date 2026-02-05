@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
-#include "../../src/core/client/client.hpp"
-#include "../../src/core/place/place.hpp"
-#include "../../src/utils/time/time.hpp"
-#include "../../src/core/waiting_queue/waiting_queue.hpp"
+#include "core/client/client.hpp"
+#include "core/place/place.hpp"
+#include "utils/time/time.hpp"
+#include "core/waiting_queue/waiting_queue.hpp"
 
 TEST(ClientTest, InitialState) {
     Client c("alice");

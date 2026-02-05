@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../../src/utils/time/time.hpp"
+#include "utils/time/time.hpp"
 
 TEST(TimeTest, ParseValidTime) {
     Time t("09:30");

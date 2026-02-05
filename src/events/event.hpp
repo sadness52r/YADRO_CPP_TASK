@@ -4,7 +4,7 @@
 #include <memory>
 #include <unordered_map>
 
-#include "../utils/time/time.hpp"
+#include "utils/time/time.hpp"
 
 
 enum class EventType : int {
@@ -27,9 +27,9 @@ inline std::unordered_map<unsigned int, EventType> EVENT_ID_TO_TYPE = {
     {2, EventType::ClientSatDown},
     {3, EventType::ClientWaiting},
     {4, EventType::ClientLeft},
-    {11, EventType::ClientForcedLeft},
-    {12, EventType::ClientSeatedFromQueue},
-    {13, EventType::Error}
+    // {11, EventType::ClientForcedLeft},
+    // {12, EventType::ClientSeatedFromQueue},
+    // {13, EventType::Error}
 };
 
 

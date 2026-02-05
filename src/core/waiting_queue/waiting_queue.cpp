@@ -17,7 +17,9 @@ void WaitingQueue::add(const std::string& client_name) {
 }
 
 std::optional<std::string> WaitingQueue::pop() {
-    if (queue.empty()) return std::nullopt;
+    if (queue.empty()) {
+        return std::nullopt;
+    }
     std::string front = queue.front();
     queue.pop();
     return front;
