@@ -3,6 +3,8 @@
 
 ## Сборка
 
+Возможно, потребуется отключить антивирус, а также убедиться, что установлены cmake и компилятор mingw (для Windows)
+
 ### Сборка через CMake (Linux / Windows MinGW)
 
 ```bash
@@ -16,7 +18,7 @@ make
 ### Запуск основного приложения
 
 ```bash
-task.exe tests\test.txt
+task.exe ..\tests\test.txt
 ```
 
 ### Запуск unit-тестов (GoogleTest)
